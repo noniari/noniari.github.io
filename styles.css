@@ -40,3 +40,31 @@ p {
     color: #333333;
     font-size: 16px;
 }
+
+/* Стили для блоков кода */
+pre {
+    background-color: aquamarine;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Подсветка синтаксиса для HTML */
+.tag {
+    color: #0000ff; /* Синий для тегов */
+}
+
+.attr {
+    color: #ff6600; /* Оранжевый для атрибутов */
+}
+
+.string {
+    color: #008000; /* Зеленый для строк */
+}
+
+.comment {
+    color: #808080; /* Серый для комментариев */
+}
