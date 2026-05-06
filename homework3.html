@@ -8,7 +8,35 @@
 </head>
 <body>
     <h1>Задание 3</h1>
-    <p>Здесь будет содержимое задания 3.</p>
+    <div id="container">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+    </div>
+    <button id="randomColors">Случайные цвета</button>
+    <button id="reset">Сброс</button>
     <a href="index.html">Вернуться на главную</a>
+
+    <script>
+        const squares = document.querySelectorAll('.square');
+        const randomBtn = document.getElementById('randomColors');
+        const resetBtn = document.getElementById('reset');
+        const palette = ['#FF5733', '#33FF57', '#3357FF', '#F033FF', '#FF33A1', '#33FFF0'];
+
+        randomBtn.addEventListener('click', () => {
+            squares.forEach(square => {
+                const randomColor = palette[Math.floor(Math.random() * palette.length)];
+                square.style.backgroundColor = randomColor;
+            });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            squares.forEach(square => {
+                square.style.backgroundColor = 'white';
+            });
+        });
+    </script>
 </body>
 </html>

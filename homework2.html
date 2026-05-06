@@ -8,7 +8,44 @@
 </head>
 <body>
     <h1>Задание 2</h1>
-    <p>Здесь будет содержимое задания 2.</p>
+    <p class="text-block">Первый абзац текста.</p>
+    <button id="btn1">Скрыть/Показать</button>
+    
+    <p class="text-block">Второй абзац текста.</p>
+    <button id="btn2">Скрыть/Показать</button>
+    
+    <p class="text-block">Третий абзац текста.</p>
+    <button id="btn3">Скрыть/Показать</button>
+    
+    <button id="toggleAll">Показать всё</button>
     <a href="index.html">Вернуться на главную</a>
+
+    <script>
+        const blocks = document.querySelectorAll('.text-block');
+        const btn1 = document.getElementById('btn1');
+        const btn2 = document.getElementById('btn2');
+        const btn3 = document.getElementById('btn3');
+        const toggleAll = document.getElementById('toggleAll');
+
+        function toggleBlock(block) {
+            block.style.display = block.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function checkAllVisible() {
+            return Array.from(blocks).every(block => block.style.display !== 'none');
+        }
+
+        btn1.addEventListener('click', () => toggleBlock(blocks[0]));
+        btn2.addEventListener('click', () => toggleBlock(blocks[1]));
+        btn3.addEventListener('click', () => toggleBlock(blocks[2]));
+
+        toggleAll.addEventListener('click', () => {
+            const allVisible = checkAllVisible();
+            blocks.forEach(block => {
+                block.style.display = allVisible ? 'none' : 'block';
+            });
+            toggleAll.textContent = allVisible ? 'Показать всё' : 'Скрыть всё';
+        });
+    </script>
 </body>
 </html>

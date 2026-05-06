@@ -8,7 +8,26 @@
 </head>
 <body>
     <h1>Задание 4</h1>
-    <p>Здесь будет содержимое задания 4.</p>
+    <div id="stateBox" class="box"></div>
+    <button id="changeState">Стандарт</button>
     <a href="index.html">Вернуться на главную</a>
+
+    <script>
+        const stateBox = document.getElementById('stateBox');
+        const changeBtn = document.getElementById('changeState');
+        let state = 0;
+        const states = [
+            { class: 'box', text: 'Стандарт' },
+            { class: 'box large red', text: 'Большой красный' },
+            { class: 'box small blue', text: 'Маленький синий' },
+            { class: 'box medium green', text: 'Средний зелёный' }
+        ];
+
+        changeBtn.addEventListener('click', () => {
+            state = (state + 1) % states.length;
+            stateBox.className = states[state].class;
+            changeBtn.textContent = states[state].text;
+        });
+    </script>
 </body>
 </html>
