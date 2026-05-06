@@ -8,9 +8,22 @@
 /* Стили для body */
 body {
     font-family: Arial, sans-serif;
-    background-color: #a8a8a8;
+    background-color: #ffffff;
     color: hsl(0, 0%, 0%);
     line-height: 1.6;
+}
+
+/* Стили для баннера */
+.banner {
+    background-color: #a8a8a8;
+    padding: 40px 20px;
+    text-align: center;
+    color: white;
+}
+
+.banner h1, .banner h2 {
+    color: white;
+    margin: 0;
 }
 
 /* Стили для заголовков */
