@@ -113,6 +113,31 @@ button:hover {
 .box.green {
     background-color: green;
 }
+
+.homework-links {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.homework-btn {
+    display: inline-block;
+    margin: 10px;
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.homework-btn:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
     font-size: 14px;
     line-height: 1.4;
 }
