@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.05.04 - Игра на скорость</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #faf7f2;
+            color: #222;
+            padding: 24px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            text-align: center;
+        }
+        .output {
+            width: 500px;
+            height: 500px;
+            border: 1px solid black;
+            margin: 0 auto;
+            position: relative;
+            background-color: #fff5f0;
+        }
+        .box {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            background-color: red;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .message {
+            text-align: center;
+            padding: 12px;
+            font-size: 1.2em;
+            margin-top: 18px;
+            background-color: #f4f4f4;
+            border-radius: 12px;
+            border: 1px solid #dcdcdc;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WEB.HW.05.04 - Игра на скорость</h1>
+        <p>Нажимайте на красный квадрат как можно быстрее после его появления.</p>
+        <div class="output" id="output"></div>
+        <div class="message" id="message">Нажмите красный квадрат, чтобы начать.</div>
+        <a href="index.html" class="back-link">← На главную</a>
+    </div>
+    <script>
+        const output = document.getElementById('output');
+        const message = document.getElementById('message');
+
+        const box = document.createElement('div');
+        box.className = 'box';
+        output.appendChild(box);
+
+        const game = {
+            start: null,
+            waiting: false
+        };
+
+        function randomNumber(max) {
+            return Math.floor(Math.random() * max);
+        }
+
+        function addBox() {
+            const maxLeft = output.clientWidth - box.clientWidth;
+            const maxTop = output.clientHeight - box.clientHeight;
+            const left = randomNumber(maxLeft);
+            const top = randomNumber(maxTop);
+            box.style.left = `${left}px`;
+            box.style.top = `${top}px`;
+            box.style.display = 'block';
+            game.start = Date.now();
+            message.textContent = 'Нажми на квадрат!';
+        }
+
+        box.addEventListener('click', () => {
+            if (!game.start) {
+                message.textContent = 'Начали! Ждите появления квадрата...';
+                box.style.display = 'none';
+                game.start = null;
+                game.waiting = true;
+                setTimeout(() => {
+                    addBox();
+                    game.waiting = false;
+                }, randomNumber(1500) + 800);
+                return;
+            }
+
+            const end = Date.now();
+            const duration = ((end - game.start) / 1000).toFixed(3);
+            message.textContent = `Время реакции: ${duration} сек. Нажмите еще раз.`;
+            game.start = null;
+            box.style.display = 'none';
+            setTimeout(() => {
+                addBox();
+            }, randomNumber(1500) + 800);
+        });
+    </script>
+</body>
+</html>

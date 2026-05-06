@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.05.02 - Звездный рейтинг</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafbfd;
+            color: #222;
+            padding: 24px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            text-align: center;
+        }
+        .stars ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .star {
+            font-size: 2.5em;
+            color: #ddd;
+            display: inline-block;
+            cursor: pointer;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+        .star:hover {
+            transform: scale(1.15);
+        }
+        .orange {
+            color: orange;
+        }
+        .output {
+            margin-top: 18px;
+            background-color: #f0f2f7;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #d7dde8;
+            min-height: 48px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WEB.HW.05.02 - Звездный рейтинг</h1>
+        <p>Оцените что-нибудь, нажав на звезды. Динамический рейтинг будет подсвечиваться.</p>
+        <div class="stars">
+            <ul>
+                <li class="star">&#10029;</li>
+                <li class="star">&#10029;</li>
+                <li class="star">&#10029;</li>
+                <li class="star">&#10029;</li>
+                <li class="star">&#10029;</li>
+            </ul>
+        </div>
+        <div class="output">Ваш рейтинг: 0</div>
+        <a href="index.html" class="back-link">← На главную</a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stars = document.querySelectorAll('.star');
+            const output = document.querySelector('.output');
+
+            stars.forEach((star, index) => {
+                const starValue = index + 1;
+                star.addEventListener('click', event => {
+                    updateRating(starValue);
+                });
+            });
+
+            function updateRating(value) {
+                output.textContent = `Ваш рейтинг: ${value}`;
+                stars.forEach((star, index) => {
+                    if (index < value) {
+                        star.classList.add('orange');
+                    } else {
+                        star.classList.remove('orange');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.05.01 - Ваша собственная аналитика</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fb;
+            color: #222;
+            padding: 24px;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+        }
+        .click-area {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .box {
+            width: calc(50% - 8px);
+            min-height: 120px;
+            background-color: #e6f0ff;
+            border: 2px solid #9bbdff;
+            border-radius: 14px;
+            padding: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        .box:hover {
+            transform: translateY(-3px);
+            background-color: #d7e8ff;
+        }
+        .log {
+            white-space: pre-wrap;
+            background: #f5f7ff;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #d8e1f2;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WEB.HW.05.01 - Ваша собственная аналитика</h1>
+        <p>Нажмите на любой из блоков ниже, чтобы сохранить данные о клике и вывести их на экран.</p>
+        <div id="mainContainer" class="click-area">
+            <div id="box1" class="box">Кнопка 1</div>
+            <div id="box2" class="box">Кнопка 2</div>
+            <div id="box3" class="box">Кнопка 3</div>
+            <div id="box4" class="box">Кнопка 4</div>
+        </div>
+        <h2>Лог кликов</h2>
+        <div id="log" class="log">Пока нет кликов.</div>
+        <a href="index.html" class="back-link">← На главную</a>
+    </div>
+    <script>
+        const mainContainer = document.getElementById('mainContainer');
+        const logElement = document.getElementById('log');
+        const clickLog = [];
+
+        function renderLog() {
+            if (clickLog.length === 0) {
+                logElement.textContent = 'Пока нет кликов.';
+                return;
+            }
+            logElement.textContent = clickLog.map((item, index) => {
+                return `${index + 1}. id=${item.id}, tag=${item.tagName}, class=${item.className}, text=${item.textContent}`;
+            }).join('\n');
+        }
+
+        mainContainer.addEventListener('click', event => {
+            const target = event.target;
+            if (!target.id || target === mainContainer) {
+                return;
+            }
+            const clickInfo = {
+                textContent: target.textContent.trim(),
+                id: target.id,
+                tagName: target.tagName,
+                className: target.className
+            };
+            clickLog.push(clickInfo);
+            renderLog();
+        });
+    </script>
+</body>
+</html>
