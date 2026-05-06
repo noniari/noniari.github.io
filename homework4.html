@@ -3,31 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Задание 4</title>
+    <title>WEB.HW.04</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Задание 4</h1>
-    <div id="stateBox" class="box"></div>
-    <button id="changeState">Стандарт</button>
-    <a href="index.html">Вернуться на главную</a>
-
-    <script>
-        const stateBox = document.getElementById('stateBox');
-        const changeBtn = document.getElementById('changeState');
-        let state = 0;
-        const states = [
-            { class: 'box', text: 'Стандарт' },
-            { class: 'box large red', text: 'Большой красный' },
-            { class: 'box small blue', text: 'Маленький синий' },
-            { class: 'box medium green', text: 'Средний зелёный' }
-        ];
-
-        changeBtn.addEventListener('click', () => {
-            state = (state + 1) % states.length;
-            stateBox.className = states[state].class;
-            changeBtn.textContent = states[state].text;
-        });
-    </script>
+    <div class="container">
+        <h1>Домашняя работа WEB.HW.04</h1>
+        <p>В этом задании выполняются три части: аккордеон, интерактивное голосование и игра «Виселица».</p>
+        <div class="homework-links">
+            <a href="homework4-1.html" class="homework-btn">WEB.HW.04.01 Аккордеон</a>
+            <a href="homework4-2.html" class="homework-btn">WEB.HW.04.02 Голосование</a>
+            <a href="homework4-3.html" class="homework-btn">WEB.HW.04.03 Виселица</a>
+        </div>
+        <a href="index.html" class="homework-btn">← На главную</a>
+    </div>
 </body>
 </html>

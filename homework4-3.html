@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.04.03 - Виселица</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef1f8;
+            color: #222;
+            padding: 20px;
+        }
+        .gameArea {
+            text-align: center;
+            font-size: 1.1em;
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+        }
+        .box,
+        .boxD {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 6px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+        }
+        .box {
+            background-color: #f1f5ff;
+            border: 2px solid #c7d2fe;
+        }
+        .boxD {
+            background-color: #d6f5d6;
+            border: 2px solid #6bc36b;
+            color: #0b6623;
+            cursor: default;
+        }
+        .boxE {
+            display: inline-block;
+            width: 40px;
+            height: 48px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1.5em;
+            line-height: 48px;
+            margin: 6px;
+            text-align: center;
+            background-color: #f8fafc;
+            min-width: 44px;
+        }
+        button {
+            margin-top: 18px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            background-color: #007bff;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        button:hover {
+            background-color: #0056d6;
+            transform: translateY(-2px);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const wordsList = ['ПРОГРАММА', 'ВИСЕЛИЦА', 'КОД'];
+            let words = [...wordsList];
+            const game = {
+                solution: '',
+                puzzle: [],
+                remaining: 0
+            };
+
+            const scoreDiv = document.querySelector('.score');
+            const puzzleDiv = document.querySelector('.puzzle');
+            const lettersDiv = document.querySelector('.letters');
+            const startButton = document.querySelector('button');
+
+            function createElement(type, parent, content, cls) {
+                const el = document.createElement(type);
+                if (cls) el.className = cls;
+                el.textContent = content;
+                parent.appendChild(el);
+                return el;
+            }
+
+            function updateScore() {
+                if (game.remaining <= 0) {
+                    scoreDiv.textContent = 'Слово разгадано! Нажмите кнопку для следующего.';
+                    startButton.style.display = 'inline-block';
+                    startButton.textContent = 'Следующее слово';
+                } else {
+                    scoreDiv.textContent = `Осталось букв: ${game.remaining}`;
+                }
+            }
+
+            function checker(letterEl, letter) {
+                letterEl.classList.remove('box');
+                letterEl.classList.add('boxD');
+                letterEl.style.pointerEvents = 'none';
+                checkLetter(letter);
+            }
+
+            function checkLetter(letter) {
+                let found = false;
+                const solutionChars = game.solution.split('');
+                solutionChars.forEach((ch, index) => {
+                    if (ch === letter && game.puzzle[index].textContent !== letter) {
+                        game.puzzle[index].textContent = letter;
+                        game.remaining -= 1;
+                        found = true;
+                    }
+                });
+                if (found) {
+                    updateScore();
+                }
+            }
+
+            function buildLetters() {
+                const alphabet = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+                alphabet.split('').forEach(letter => {
+                    const letterEl = createElement('span', lettersDiv, letter, 'box');
+                    letterEl.addEventListener('click', () => checker(letterEl, letter));
+                });
+            }
+
+            function startGame() {
+                if (words.length === 0) {
+                    words = [...wordsList];
+                }
+                startButton.style.display = 'none';
+                puzzleDiv.innerHTML = '';
+                lettersDiv.innerHTML = '';
+                game.puzzle = [];
+                game.remaining = 0;
+                game.solution = words.shift();
+
+                game.solution.split('').forEach(char => {
+                    const box = createElement('span', puzzleDiv, '-', 'boxE');
+                    if (char === ' ') {
+                        box.textContent = '';
+                        box.style.borderColor = 'white';
+                    } else {
+                        game.remaining += 1;
+                    }
+                    game.puzzle.push(box);
+                });
+
+                buildLetters();
+                updateScore();
+            }
+
+            startButton.addEventListener('click', startGame);
+        });
+    </script>
+</head>
+<body>
+    <div class="gameArea">
+        <div class="score"></div>
+        <div class="puzzle"></div>
+        <div class="letters"></div>
+        <button>Start Game</button>
+        <a href="homework4.html" class="back-link">← Назад к домашнему заданию 4</a>
+    </div>
+</body>
+</html>

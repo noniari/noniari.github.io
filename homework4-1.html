@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.04.01 - Аккордеон</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9ff;
+            color: #222;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 16px 35px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .title {
+            font-size: 1.5em;
+            background-color: #ddd;
+            padding: 16px 20px;
+            margin: 0;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .title:hover {
+            background-color: #c8c8c8;
+        }
+        .myText {
+            display: none;
+            padding: 16px 20px;
+            border-top: 1px solid #ccc;
+            background-color: #f4f4f4;
+            line-height: 1.5;
+        }
+        .active {
+            display: block !important;
+        }
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const titles = document.querySelectorAll('.title');
+            const texts = document.querySelectorAll('.myText');
+
+            function closeAll() {
+                texts.forEach(text => text.classList.remove('active'));
+            }
+
+            titles.forEach((title, index) => {
+                title.addEventListener('click', () => {
+                    const currentText = texts[index];
+                    const isActive = currentText.classList.contains('active');
+                    closeAll();
+                    if (!isActive) {
+                        currentText.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Title #1</div>
+        <div class="myText">Just some text #1</div>
+        <div class="title">Title #2</div>
+        <div class="myText">Just some text #2</div>
+        <div class="title">Title #3</div>
+        <div class="myText">Just some text #3</div>
+    </div>
+    <a href="homework4.html" class="back-link">← Назад к домашнему заданию 4</a>
+</body>
+</html>

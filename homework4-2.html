@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.04.02 - Голосование</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f8fb;
+            color: #222;
+            padding: 20px;
+        }
+        .app {
+            max-width: 640px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.08);
+            padding: 20px;
+        }
+        input[type="text"] {
+            width: calc(100% - 120px);
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        input[type="button"] {
+            padding: 10px 18px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+        input[type="button"]:hover {
+            background-color: #0056d6;
+            transform: translateY(-2px);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        td {
+            padding: 12px 14px;
+            border: 1px solid #e1e4ea;
+            text-align: center;
+        }
+        tr {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        tr:hover {
+            background-color: #f0f6ff;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 18px;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const myArray = ['Алексей', 'Мария', 'Иван'];
+            const addFriend = document.getElementById('addFriend');
+            const addNew = document.getElementById('addNew');
+            const output = document.getElementById('output');
+
+            const people = myArray.map(name => ({ name, votes: 0 }));
+
+            function renderList() {
+                output.innerHTML = '';
+                people.forEach((person, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${index + 1}</td><td>${person.name}</td><td>${person.votes}</td>`;
+                    row.addEventListener('click', () => {
+                        person.votes += 1;
+                        row.cells[2].textContent = person.votes;
+                    });
+                    output.appendChild(row);
+                });
+            }
+
+            addNew.addEventListener('click', () => {
+                const name = addFriend.value.trim();
+                if (name) {
+                    people.push({ name, votes: 0 });
+                    addFriend.value = '';
+                    renderList();
+                }
+            });
+
+            renderList();
+        });
+    </script>
+</head>
+<body>
+    <div class="app">
+        <div id="message">Complete JavaScript Course</div>
+        <div>
+            <input type="text" id="addFriend" placeholder="Введите имя друга">
+            <input type="button" id="addNew" value="Add Friend">
+        </div>
+        <table id="output"></table>
+        <a href="homework4.html" class="back-link">← Назад к домашнему заданию 4</a>
+    </div>
+</body>
+</html>
