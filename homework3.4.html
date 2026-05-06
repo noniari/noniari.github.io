@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.03.04</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>WEB.HW.03.04</h1>
+        <p>Нажимайте на кнопку, чтобы менять состояние квадрата и текст кнопки.</p>
+        <div id="stateBox" class="box"></div>
+        <button id="changeState">Стандарт</button>
+        <a href="index.html" class="homework-btn">← На главную</a>
+    </div>
+    <script>
+        const stateBox = document.getElementById('stateBox');
+        const changeBtn = document.getElementById('changeState');
+        let state = 0;
+        const states = [
+            { className: 'box', text: 'Стандарт' },
+            { className: 'box large red', text: 'Большой красный' },
+            { className: 'box small blue', text: 'Маленький синий' },
+            { className: 'box medium green', text: 'Средний зелёный' }
+        ];
+
+        changeBtn.addEventListener('click', () => {
+            state = (state + 1) % states.length;
+            stateBox.className = states[state].className;
+            changeBtn.textContent = states[state].text;
+        });
+    </script>
+</body>
+</html>
