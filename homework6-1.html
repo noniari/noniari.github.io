@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB.HW.06.01 — C++ Game Development</title>
+  </head>
+  <body class="speaker-page" data-theme="light">
+    <header class="page-header">
+      <div>
+        <a class="brand-link" href="index.html">Алексей — HW 01</a>
+        <p class="page-subtitle">Доклад Patrice Roy: многие способы убить орка</p>
+      </div>
+      <button id="themeToggle" class="theme-toggle" type="button">Тёмная тема</button>
+    </header>
+
+    <nav class="section-nav" aria-label="Навигация по разделам">
+      <a href="#intro">Введение</a>
+      <a href="#bio">О спикере</a>
+      <a href="#timecodes">Timecode</a>
+      <a href="#model">Модель</a>
+      <a href="#design">Дизайн</a>
+      <a href="#cpp20">C++20</a>
+      <a href="#conclusion">Выводы</a>
+      <a href="#sources">Источники</a>
+    </nav>
+
+    <main>
+      <article class="hero">
+        <p class="eyebrow">Зачётное задание по Интернет-программированию</p>
+        <h1>C++ Game Development — Many Ways to Kill an Orc</h1>
+        <p>Страница объясняет архитектурную эволюцию игрового кода в докладе Patrice Roy: от базовой модели классов до modern C++ подходов.</p>
+        <div class="hero-meta">
+          <a class="source-link" href="https://www.youtube.com/watch?v=g-SnU4xRHMQ&utm_source=chatgpt.com" target="_blank" rel="noopener">Ссылка на видеодоклад</a>
+          <span>GitHub Pages: <a class="source-link" href="https://noniari.github.io" target="_blank" rel="noopener">https://noniari.github.io</a></span>
+        </div>
+      </article>
+
+      <section id="bio" class="content-section">
+        <div class="section-head">
+          <h2>О спикере</h2>
+          <p>Patrice Roy — инженер C++ с опытом разработки игровых систем и докладчик конференций CppCon. В выступлении он анализирует дизайн игровых механик, фокусируясь на архитектуре.</p>
+        </div>
+        <p>За докладом стоит подход, где игра служит иллюстрацией архитектурных выборов: наследование, интерфейсы, композиция, templates и std::variant.</p>
+        <ul class="conclusion-list">
+          <li>Специализация: C++ и game development.</li>
+          <li>Тема: архитектурные принципы для игровых объектов.</li>
+          <li>Цель: продемонстрировать, как различные реализации влияют на расширяемость и производительность.</li>
+        </ul>
+      </section>
+
+      <section id="intro" class="content-section">
+        <div class="section-head">
+          <h2>Введение</h2>
+          <p>Доклад посвящён архитектуре игрового кода, а не просто разработке игр. Орки и герои служат моделью для обсуждения дизайна.</p>
+        </div>
+        <div class="timeline" aria-label="Таймлайн доклада">
+          <h3>Интерактивный таймлайн</h3>
+          <div class="timeline-list"></div>
+        </div>
+      </section>
+
+      <section id="timecodes" class="content-section">
+        <div class="section-head">
+          <h2>Timecode-навигатор</h2>
+          <p>Перейдите прямо к ключевым этапам доклада.</p>
+        </div>
+        <div class="timeline" aria-label="Навигация по таймкодам">
+          <div class="timeline-list"></div>
+        </div>
+      </section>
+
+      <section id="model" class="content-section">
+        <div class="section-head">
+          <h2>1. Базовая игровая модель</h2>
+          <p>Герой и орк наследуются от Character, но задача показывает, что простая система быстро становится неудобной.</p>
+        </div>
+
+        <div class="accordion" aria-label="Основные проблемы дизайна">
+          <div class="accordion-item">
+            <button class="accordion-trigger" type="button" aria-expanded="false">Private inheritance и уменьшение видимости</button>
+            <div class="accordion-panel">
+              <p>Автор использует private inheritance, чтобы скрыть реализацию Character и избежать slicing — но это усложняет polymorphism.</p>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <button class="accordion-trigger" type="button" aria-expanded="false">Почему Character не должен атаковать</button>
+            <div class="accordion-panel">
+              <p>Добавление метода attack в базовый класс ведёт к feature creep. Это служит примером, как не стоит расширять ответственность общей сущности.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="design" class="content-section">
+        <div class="section-head">
+          <h2>2. Damageable и Bellicose</h2>
+          <p>Разделение обязанностей делает структуру легче расширяемой и уменьшает связность.</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Примеры архитектуры">
+          <button class="tab-btn active" type="button" data-tab="design-1">Damageable</button>
+          <button class="tab-btn" type="button" data-tab="design-2">Bellicose</button>
+          <button class="tab-btn" type="button" data-tab="design-3">Armor</button>
+        </div>
+
+        <div class="tab-panels">
+          <article id="design-1" class="tab-panel active">
+            <h3>Damageable</h3>
+            <p>Интерфейс для любого объекта, который может получить урон.</p>
+            <pre><code class="code-block" id="code-1">struct Damageable {
+    virtual void suffer(int damage) = 0;
+};</code></pre>
+            <button class="copy-btn" data-copy-target="code-1" type="button">Копировать код</button>
+          </article>
+
+          <article id="design-2" class="tab-panel">
+            <h3>Bellicose</h3>
+            <p>Интерфейс атаки разделён на отдельный тип, чтобы класс Character не обременялся лишней логикой.</p>
+            <pre><code class="code-block" id="code-2">struct Bellicose {
+    virtual void hit(Damageable& target) = 0;
+};</code></pre>
+            <button class="copy-btn" data-copy-target="code-2" type="button">Копировать код</button>
+          </article>
+
+          <article id="design-3" class="tab-panel">
+            <h3>Armor</h3>
+            <p>Броня оформлена как отдельный объект композиции, а не как часть базовой сущности.</p>
+            <pre><code class="code-block" id="code-3">class Armor {
+public:
+    int protection() const;
+};</code></pre>
+            <button class="copy-btn" data-copy-target="code-3" type="button">Копировать код</button>
+          </article>
+        </div>
+      </section>
+
+      <section id="cpp20" class="content-section">
+        <div class="section-head">
+          <h2>3. Templates и concepts</h2>
+          <p>Переход к modern C++ показывает, что поведение важнее иерархии.</p>
+        </div>
+
+        <div class="cards-grid">
+          <article class="card">
+            <h3>Concepts</h3>
+            <p>Поведенческие требования задаются на уровне типов без virtual-функций.</p>
+          </article>
+          <article class="card">
+            <h3>std::variant</h3>
+            <p>Разные игровые сущности хранятся в едином контейнере без runtime-полиморфизма.</p>
+          </article>
+          <article class="card">
+            <h3>Performance</h3>
+            <p>Variant-подход уменьшает размер объекта и ускоряет вызов методов.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="conclusion" class="content-section">
+        <div class="section-head">
+          <h2>4. Выводы</h2>
+          <p>Доклад подчеркивает, что архитектуру нужно выбирать под задачу, а не под привычный шаблон.</p>
+        </div>
+        <ul class="conclusion-list">
+          <li>Не добавляйте функциональность в базовый класс ради быстрого исправления.</li>
+          <li>Современному C++ доступны inheritance, templates, concepts и variant.</li>
+          <li>Каждый подход имеет свои преимущества и цену поддержки.</li>
+        </ul>
+      </section>
+
+      <section id="sources" class="content-section">
+        <div class="section-head">
+          <h2>Источники</h2>
+        </div>
+        <ul class="source-list">
+          <li><a href="https://www.youtube.com/watch?v=g-SnU4xRHMQ&utm_source=chatgpt.com" target="_blank" rel="noopener">Видео доклада CppCon 2024</a></li>
+          <li><a href="https://cppcon.org/?utm_source=chatgpt.com" target="_blank" rel="noopener">Официальный сайт CppCon</a></li>
+          <li><a href="https://www.youtube.com/@CppCon?utm_source=chatgpt.com" target="_blank" rel="noopener">Канал CppCon</a></li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="page-footer">
+      <p>Страница создана в соответствии с заданием: интерактивный таймлайн, табы, тема и копирование кода.</p>
+    </footer>
+
+    <script src="speaker.js"></script>
+  </body>
+</html>
