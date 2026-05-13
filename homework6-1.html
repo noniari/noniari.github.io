@@ -40,14 +40,14 @@
       <section id="bio" class="content-section speaker-bio">
         <div class="section-head">
           <h2>О спикере</h2>
-          <p>Patrice Roy — инженер C++ и докладчик CppCon, который использует игровой пример с героями и орками, чтобы рассказать не о играх, а об архитектуре кода.</p>
+          <p>Patrice Roy — инженер C++ и докладчик CppCon, который использует игровой пример с героями и орками, чтобы рассказать об архитектуре кода.</p>
         </div>
         <div class="speaker-card">
           <img id="speakerPhoto" class="speaker-photo" src="image.png" alt="Портрет Patrice Roy" onerror="this.onerror=null;this.src='patrice-roy.svg';">
           <div class="speaker-info">
             <p>В начале доклада он прямо говорит, что не является игровым программистом, а герои/орки служат только для иллюстрации архитектурных решений.</p>
             <ul class="bio-list">
-              <li>Доклад на CppCon 2024 посвящён дизайну кода, а не игровым механикам.</li>
+              <li>Доклад на CppCon 2024 посвящён дизайну кода.</li>
               <li>Показывает, как private inheritance, interfaces, templates и concepts влияют на поддерживаемость.</li>
               <li>Основная мысль: выбор архитектуры должен зависеть от задачи, а не от привычного шаблона.</li>
             </ul>
@@ -58,7 +58,7 @@
       <section id="intro" class="content-section">
         <div class="section-head">
           <h2>Введение</h2>
-          <p>В начале доклада Patrice сразу уточняет: это не доклад для игровых программистов, а речь о проектировании кода. Он использует метафору орков и героев, чтобы показать разные архитектурные подходы.</p>
+          <p>В начале доклада Patrice сразу уточняет: это речь о проектировании кода. Он использует метафору орков и героев, чтобы показать разные архитектурные подходы.</p>
           <ul class="bio-list">
             <li>видео начинается с объяснения, что код в докладе компилирует и всё доступно в слайдах;</li>
             <li>герои и орки — пример для обсуждения ответственности классов и разделения обязанностей;</li>
@@ -79,8 +79,44 @@
 
       <section id="model" class="content-section">
         <div class="section-head">
-          <h2>1. Базовая игровая модель</h2>
-          <p>Герой и орк наследуются от Character, но задача показывает, что простая система быстро становится неудобной.</p>
+          <h2>1. Классический OOP-подход</h2>
+          <p>В докладе сначала разбирается классический подход C++: интерфейс <code>Damageable</code>, базовые классы и виртуальные функции.</p>
+        </div>
+
+        <div class="code-example">
+          <h3>Damageable</h3>
+          <pre><code class="code-block">struct Damageable {
+    virtual void suffer(int) = 0;
+    virtual ~Damageable() = default;
+};</code></pre>
+          <p>Любой объект, который можно бить, реализует <code>suffer()</code>. Это даёт runtime polymorphism через vtable.</p>
+        </div>
+
+        <div class="code-example">
+          <h3>Character и Hero</h3>
+          <pre><code class="code-block">class Character : virtual public Damageable {
+    std::string name_;
+    int life_;
+
+public:
+    void suffer(int damage) override {
+        life_ -= damage;
+    }
+
+    bool alive() const {
+        return life_ > 0;
+    }
+};
+
+class Hero : public Character {
+    int strength_;
+
+public:
+    void hit(Damageable& other) {
+        other.suffer(strength_);
+    }
+};</code></pre>
+          <p>При атаке вызывается виртуальная функция, что влечёт indirect call, больший размер объекта и runtime overhead.</p>
         </div>
 
         <div class="accordion" aria-label="Основные проблемы дизайна">
@@ -102,7 +138,11 @@
       <section id="design" class="content-section">
         <div class="section-head">
           <h2>2. Damageable и Bellicose</h2>
-          <p>Разделение обязанностей делает структуру легче расширяемой и уменьшает связность.</p>
+          <p>Разделение обязанностей делает структуру легче расширяемой и уменьшает связность. Автор сравнивает virtual-подход, который добавляет размер и indirect calls, с подходом через шаблоны.</p>
+          <ul class="bio-list">
+            <li>Классический OOP: vtable + virtual inheritance + indirect вызовы.</li>
+            <li>Шаблонный подход: прямые вызовы, меньше накладных расходов, compile-time polymorphism.</li>
+          </ul>
         </div>
 
         <div class="tabs" role="tablist" aria-label="Примеры архитектуры">
@@ -144,8 +184,38 @@ public:
 
       <section id="cpp20" class="content-section">
         <div class="section-head">
-          <h2>3. Templates и concepts</h2>
-          <p>Переход к modern C++ показывает, что поведение важнее иерархии.</p>
+          <h2>3. Templates, concepts и variant</h2>
+          <p>Переход к modern C++ показывает, что поведение важнее иерархии. В докладе это оформлено как отказ от virtual в пользу шаблонов, concepts и <code>std::variant</code>.</p>
+        </div>
+        <div class="code-example">
+          <h3>Concepts</h3>
+          <pre><code class="code-block">template <class T>
+concept Damageable = requires(T& a) {
+    a.suffer(std::declval<int>());
+};
+
+template <class T>
+concept Bellicose = requires(T& a) {
+    bellicose_test(a);
+};
+
+void attack(Bellicose auto& from,
+            Damageable auto& to) {
+    from.hit(to);
+}
+</code></pre>
+          <p>Concepts делают требования явными и дают понятные ошибки компиляции вместо длинных шаблонных сообщений.</p>
+        </div>
+        <div class="code-example">
+          <h3>Variant вместо базового класса</h3>
+          <pre><code class="code-block">template <Damageable ... Ts>
+void attack(Bellicose auto& from,
+            std::variant<Ts...>& to) {
+    std::visit([&from](Damageable auto&& victim) {
+        from.hit(victim);
+    }, to);
+}</code></pre>
+          <p><code>std::variant</code> заменяет «base class + virtual» на compile-time union типов и позволяет хранить разные жертвы в контейнере.</p>
         </div>
 
         <div class="cards-grid">
