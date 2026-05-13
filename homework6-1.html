@@ -9,8 +9,7 @@
   <body class="speaker-page" data-theme="light">
     <header class="page-header">
       <div>
-        <a class="brand-link" href="index.html">Алексей — HW 01</a>
-        <p class="page-subtitle">Доклад Patrice Roy: многие способы убить орка</p>
+        <p class="page-subtitle">Доклад <a class="bio-link" href="#bio">Patrice Roy: многие способы убить орка</a></p>
       </div>
       <button id="themeToggle" class="theme-toggle" type="button">Тёмная тема</button>
     </header>
@@ -30,34 +29,42 @@
       <article class="hero">
         <p class="eyebrow">Зачётное задание по Интернет-программированию</p>
         <h1>C++ Game Development — Many Ways to Kill an Orc</h1>
-        <p>Страница объясняет архитектурную эволюцию игрового кода в докладе Patrice Roy: от базовой модели классов до modern C++ подходов.</p>
+        <h2 class="speaker-title"><a class="bio-link" href="#bio">Доклад Patrice Roy: многие способы убить орка</a></h2>
+        <p>Доклад раскрывает архитектурную эволюцию игровых сущностей в C++: от простого наследования до modern C++ без runtime-polymorphism.</p>
         <div class="hero-meta">
-          <a class="source-link" href="https://www.youtube.com/watch?v=g-SnU4xRHMQ&utm_source=chatgpt.com" target="_blank" rel="noopener">Ссылка на видеодоклад</a>
+          <a class="source-link" href="https://youtu.be/g-SnU4xRHMQ?si=sAR90t1xZoGSvCSb" target="_blank" rel="noopener">Ссылка на видеодоклад</a>
           <span>GitHub Pages: <a class="source-link" href="https://noniari.github.io" target="_blank" rel="noopener">https://noniari.github.io</a></span>
         </div>
       </article>
 
-      <section id="bio" class="content-section">
+      <section id="bio" class="content-section speaker-bio">
         <div class="section-head">
           <h2>О спикере</h2>
-          <p>Patrice Roy — инженер C++ с опытом разработки игровых систем и докладчик конференций CppCon. В выступлении он анализирует дизайн игровых механик, фокусируясь на архитектуре.</p>
+          <p>Patrice Roy — инженер C++ и специалист по игровой архитектуре, который рассказывает о проектных решениях, важности разделения ответственности и современном использовании языка для игровых систем.</p>
         </div>
-        <p>За докладом стоит подход, где игра служит иллюстрацией архитектурных выборов: наследование, интерфейсы, композиция, templates и std::variant.</p>
-        <ul class="conclusion-list">
-          <li>Специализация: C++ и game development.</li>
-          <li>Тема: архитектурные принципы для игровых объектов.</li>
-          <li>Цель: продемонстрировать, как различные реализации влияют на расширяемость и производительность.</li>
-        </ul>
+        <div class="speaker-card">
+          <img class="speaker-photo" src="patrice-roy.svg" alt="Портрет Patrice Roy">
+          <div class="speaker-info">
+            <p>Patrice выступал на CppCon 2024 с докладом на тему того, как дизайн кода влияет на расширяемость и производительность игровых механик.</p>
+            <ul class="bio-list">
+              <li>Опыт с C++ более 10 лет.</li>
+              <li>Специализируется на game development и архитектуре систем.</li>
+              <li>Использует композицию, templates и std::variant в современных проектах.</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section id="intro" class="content-section">
         <div class="section-head">
           <h2>Введение</h2>
-          <p>Доклад посвящён архитектуре игрового кода, а не просто разработке игр. Орки и герои служат моделью для обсуждения дизайна.</p>
-        </div>
-        <div class="timeline" aria-label="Таймлайн доклада">
-          <h3>Интерактивный таймлайн</h3>
-          <div class="timeline-list"></div>
+          <p>Доклад объясняет, почему архитектура важнее выбора конкретной игровой механики. На примере героя и орка обсуждаются:
+          </p>
+          <ul class="bio-list">
+            <li>когда наследование делает систему жёсткой;</li>
+            <li>почему классы не должны брать на себя функции, которые им не соответствуют;</li>
+            <li>как modern C++ позволяет выбирать поведение по возможностям, а не по иерархии.</li>
+          </ul>
         </div>
       </section>
 
@@ -175,16 +182,12 @@ public:
           <h2>Источники</h2>
         </div>
         <ul class="source-list">
-          <li><a href="https://www.youtube.com/watch?v=g-SnU4xRHMQ&utm_source=chatgpt.com" target="_blank" rel="noopener">Видео доклада CppCon 2024</a></li>
-          <li><a href="https://cppcon.org/?utm_source=chatgpt.com" target="_blank" rel="noopener">Официальный сайт CppCon</a></li>
-          <li><a href="https://www.youtube.com/@CppCon?utm_source=chatgpt.com" target="_blank" rel="noopener">Канал CppCon</a></li>
+          <li><a href="https://youtu.be/g-SnU4xRHMQ?si=sAR90t1xZoGSvCSb" target="_blank" rel="noopener">Видео доклада CppCon 2024</a></li>
+          <li><a href="https://cppcon.org/" target="_blank" rel="noopener">Официальный сайт CppCon</a></li>
+          <li><a href="https://www.youtube.com/@CppCon" target="_blank" rel="noopener">Канал CppCon</a></li>
         </ul>
       </section>
     </main>
-
-    <footer class="page-footer">
-      <p>Страница создана в соответствии с заданием: интерактивный таймлайн, табы, тема и копирование кода.</p>
-    </footer>
 
     <script src="speaker.js"></script>
   </body>

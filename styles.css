@@ -28,7 +28,7 @@ body {
 
 /* Стили для заголовков */
 h1 {
-    color: hsl(0, 0%, 0%);
+    color: var(--text);
     text-align: center;
     margin-bottom: 20px;
 }
@@ -56,11 +56,13 @@ p {
 
 /* Стили для блоков кода */
 pre {
-    background-color: aquamarine;
+    background-color: var(--surface-code);
+    color: var(--text);
     padding: 15px;
     border-radius: 5px;
     overflow-x: auto;
     font-family: 'Courier New', monospace;
+    border: 1px solid var(--border);
 }
 
 /* Стили для заданий */
@@ -185,6 +187,7 @@ button:hover {
 :root {
     --background: #f4f7fb;
     --surface: #ffffff;
+    --surface-code: #eef4ff;
     --text: #1e2635;
     --muted: #556077;
     --accent: #0659ff;
@@ -199,6 +202,7 @@ html[data-theme="dark"],
 body[data-theme="dark"] {
     --background: #141822;
     --surface: #1d2435;
+    --surface-code: #1c283e;
     --text: #eef2ff;
     --muted: #9bb0d9;
     --accent: #5ca0ff;
@@ -296,8 +300,24 @@ body {
 }
 
 .hero h1 {
-    font-size: clamp(2rem, 3vw, 3rem);
-    margin-bottom: 10px;
+    font-size: clamp(2.2rem, 3vw, 3.5rem);
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.speaker-title {
+    font-size: clamp(1.25rem, 2vw, 1.8rem);
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.speaker-title a {
+    color: var(--accent-strong);
+    text-decoration: none;
+}
+
+.speaker-title a:hover {
+    text-decoration: underline;
 }
 
 .hero p,
@@ -323,6 +343,41 @@ body {
     margin: 0 auto 24px;
     padding: 24px 28px;
     border-radius: var(--radius);
+    border: 1px solid var(--border);
+}
+
+.speaker-bio .speaker-card {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 24px;
+    align-items: center;
+    margin-top: 18px;
+}
+
+.speaker-photo {
+    width: 100%;
+    height: auto;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.speaker-info {
+    display: grid;
+    gap: 12px;
+}
+
+.bio-list {
+    list-style: none;
+    padding-left: 0;
+    display: grid;
+    gap: 10px;
+}
+
+.bio-list li {
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(6, 89, 255, 0.06);
     border: 1px solid var(--border);
 }
 
@@ -479,11 +534,13 @@ body {
 .code-block {
     display: block;
     white-space: pre-wrap;
-    background: rgba(6, 89, 255, 0.08);
+    background: var(--surface-code);
+    color: var(--text);
     padding: 16px;
     border-radius: 14px;
     margin: 0;
     font-size: 0.95rem;
+    border: 1px solid var(--border);
 }
 
 .page-footer {
