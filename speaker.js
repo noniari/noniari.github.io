@@ -1,9 +1,11 @@
 const timelineData = [
-  {id: 'intro', time: '00:00', title: 'Введение', text: 'Цель доклада и роль архитектуры в игровой системе.'},
-  {id: 'model', time: '02:00', title: 'Базовая модель', text: 'Первичная иерархия Character / Hero / Orc и первые проблемы.'},
-  {id: 'design', time: '09:30', title: 'Damageable и Bellicose', text: 'Разделение обязанностей и композиция вместо feature creep.'},
-  {id: 'cpp20', time: '19:00', title: 'Templates и concepts', text: 'Современный C++: поведение важнее иерархий.'},
-  {id: 'conclusion', time: '46:00', title: 'Выводы', text: 'Архитектура должна выбираться под задачу.'}
+  {id: 'intro', time: '00:00', title: 'Введение', text: 'Доклад о дизайне, не о разработке игр.'},
+  {id: 'model', time: '02:00', title: 'Character / Hero / Orc', text: 'Первые классы, private inheritance и первые архитектурные ошибки.'},
+  {id: 'design', time: '09:30', title: 'Damageable и Bellicose', text: 'Решение через разделение обязанностей и композицию.'},
+  {id: 'cpp20', time: '19:00', title: 'Templates / Concepts', text: 'Новые способы выразить поведение без иерархии.'},
+  {id: 'variant', time: '27:00', title: 'std::variant / std::visit', text: 'Группирование разных типов без virtual dispatch.'},
+  {id: 'battle', time: '35:00', title: 'Массовые битвы', text: 'Команды героев и монстров, типы оружия и заклинаний.'},
+  {id: 'conclusion', time: '46:00', title: 'Выводы', text: 'Архитектурные выборы зависят от задачи и поддержки.'}
 ];
 
 function initTheme() {
@@ -21,6 +23,13 @@ function initTheme() {
     localStorage.setItem('site-theme', nextTheme);
     themeToggle.textContent = nextTheme === 'dark' ? 'Светлая тема' : 'Тёмная тема';
   });
+
+  const speakerPhoto = document.getElementById('speakerPhoto');
+  if (speakerPhoto) {
+    speakerPhoto.addEventListener('error', () => {
+      speakerPhoto.src = 'patrice-roy.svg';
+    });
+  }
 }
 
 function initTimeline() {

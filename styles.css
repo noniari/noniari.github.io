@@ -311,12 +311,14 @@ body {
     line-height: 1.2;
 }
 
-.speaker-title a {
+.speaker-title a,
+.bio-link {
     color: var(--accent-strong);
     text-decoration: none;
 }
 
-.speaker-title a:hover {
+.speaker-title a:hover,
+.bio-link:hover {
     text-decoration: underline;
 }
 
