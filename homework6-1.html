@@ -19,6 +19,7 @@
       <a href="#bio">О спикере</a>
       <a href="#timecodes">Timecode</a>
       <a href="#model">Модель</a>
+      <a href="#code-examples">Примеры кода</a>
       <a href="#design">Дизайн</a>
       <a href="#cpp20">C++20</a>
       <a href="#conclusion">Выводы</a>
@@ -96,6 +97,46 @@
               <p>Добавление метода attack в базовый класс ведёт к feature creep. Это служит примером, как не стоит расширять ответственность общей сущности.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section id="code-examples" class="content-section">
+        <div class="section-head">
+          <h2>Примеры кода</h2>
+          <p>В докладе объясняется, что наследование и виртуальные функции влияют не только на синтаксис программы, но и на то, как объект устроен в памяти. Ниже приведён пример обычного наследования, который помогает понять тему.</p>
+        </div>
+        <div class="code-example">
+          <h3>Обычное наследование</h3>
+          <p>Здесь класс <code>Dog</code> наследуется от класса <code>Animal</code>. Объект <code>Dog</code> содержит часть <code>Animal</code> и добавляет своё поле.</p>
+          <pre><code class="code-block">class Animal {
+public:
+    int age;
+
+    void eat() {
+        // общее действие для всех животных
+    }
+};
+
+class Dog : public Animal {
+public:
+    int weight;
+
+    void bark() {
+        // действие, которое есть только у собаки
+    }
+};
+
+int main() {
+    Dog dog;
+
+    dog.age = 3;
+    dog.weight = 15;
+
+    dog.eat();
+    dog.bark();
+}
+</code></pre>
+          <p>В этом примере нет виртуальных функций, поэтому вызовы методов достаточно простые. Компилятор заранее понимает, какую функцию нужно вызвать.</p>
         </div>
       </section>
 
