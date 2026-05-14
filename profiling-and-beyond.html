@@ -1,0 +1,714 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Profiling and Beyond — Оптимизация производительности в игровых движках</title>
+  </head>
+  <body class="speaker-page" data-theme="light">
+    <header class="page-header">
+      <div>
+        <p class="page-subtitle">Доклад Philipp Belozerov и Vladislav Gordienko: Our Profiling and Beyond</p>
+      </div>
+      <button id="themeToggle" class="theme-toggle" type="button">Тёмная тема</button>
+    </header>
+
+    <nav class="section-nav" aria-label="Навигация по разделам">
+      <a href="#intro">Введение</a>
+      <a href="#bio">О спикерах</a>
+      <a href="#overview">Обзор</a>
+      <a href="#architecture">Архитектура</a>
+      <a href="#profiling">Профилирование</a>
+      <a href="#gpu">GPU</a>
+      <a href="#memory">Память</a>
+      <a href="#conclusion">Выводы</a>
+      <a href="#sources">Источники</a>
+    </nav>
+
+    <main>
+      <article class="hero">
+        <p class="eyebrow">Доклад на C++ Russia 2025</p>
+        <h1>Our Profiling and Beyond</h1>
+        <h2 class="speaker-title">Оптимизация производительности в игровых движках</h2>
+        <p>Доклад раскрывает архитектуру собственного инструментального профайлера в крупных игровых проектах. Авторы показывают не только теорию профилирования CPU, GPU, памяти и файловой системы, но и реальные инженерные решения: hook-системы, сбор GPU-таймингов, анализ VRAM и ETW-трейсинг Windows.</p>
+        <div class="hero-meta">
+          <a class="source-link" href="https://www.youtube.com/watch?v=C6pHrKRPZ4Q" target="_blank" rel="noopener">Ссылка на видеодоклад</a>
+          <a class="source-link" href="https://cppconf.ru/archive/2025/talks/50b67463fdf744fc97aa438455d5f8b6/" target="_blank" rel="noopener">На сайте конференции</a>
+          <a class="source-link" href="https://squidex.jugru.team/api/assets/srm/cb48295e-0b16-4349-b361-bb916bba8f0a/our-profiling-and-beyond-correct.pdf" target="_blank" rel="noopener">Презентация (PDF)</a>
+        </div>
+      </article>
+
+      <section id="bio" class="content-section speaker-bio">
+        <div class="section-head">
+          <h2>О спикерах</h2>
+          <p>Оба спикера — инженеры компании Леста Игры, разработчики игровых систем и инструментов производительности.</p>
+        </div>
+        
+        <div class="speakers-grid">
+          <div class="speaker-card">
+            <img class="speaker-photo" src="philipp-belozerow.jpg" alt="Портрет Филиппа Белозёрова" onerror="this.onerror=null;this.src='placeholder.svg';">
+            <div class="speaker-info">
+              <h3><a class="bio-link" href="https://cppconf.ru/archive/2025/persons/88c14327063c4e359a71c80e658f3fde/" target="_blank" rel="noopener">Филипп Белозёров</a></h3>
+              <p class="speaker-role">Леста Игры</p>
+              <ul class="bio-list">
+                <li>Около 9 лет в компании Леста Игры</li>
+                <li>Опыт использования C++ в производственных целях — более 13 лет</li>
+                <li>Занимался разработкой инструментария и движка</li>
+                <li>Возглавляет команду Tech & Tools на проекте «Мир танков»</li>
+                <li>В докладе рассказывает про архитектуру игровых профайлеров, performance QA и подходы к контролю FPS в крупных онлайн-играх</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="speaker-card">
+            <img class="speaker-photo" src="Vladislav.png" alt="Портрет Владислава Гордиенко" onerror="this.onerror=null;this.src='placeholder.svg';">
+            <div class="speaker-info">
+              <h3><a class="bio-link" href="https://cppconf.ru/archive/2025/persons/a3912b985c884de3be4767b863196196/" target="_blank" rel="noopener">Владислав Гордиенко</a></h3>
+              <p class="speaker-role">Леста Игры</p>
+              <ul class="bio-list">
+                <li>Увлекается геймдевом уже более 13 лет</li>
+                <li>Около 10 лет опыта работы на C++</li>
+                <li>Начинал с 3D-моделирования и анимации, позже перешел на C++</li>
+                <li>Около 8 лет в компании Леста Игры</li>
+                <li>Возглавляет команду Tech & Tools на проекте «Мир кораблей»</li>
+                <li>Показывает низкоуровневую реализацию профайлера: инструментальное профилирование, hook-системы, ETW, vtable hooking</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="intro" class="content-section">
+        <div class="section-head">
+          <h2>Введение</h2>
+          <p>Почему профилирование критически важно для игр:</p>
+        </div>
+        
+        <div class="intro-grid">
+          <article class="card">
+            <h3>Реальное время</h3>
+            <p>Игры — это системы реального времени. Каждый кадр должен укладываться в ограниченное время: 60 FPS → ~16.6 мс на кадр; 120 FPS → ~8.3 мс.</p>
+          </article>
+          <article class="card">
+            <h3>Видимость проблем</h3>
+            <p>Если какая-либо система начинает работать медленнее — игрок сразу замечает лаги, фризы или просадки FPS.</p>
+          </article>
+          <article class="card">
+            <h3>Комплексность</h3>
+            <p>Проблемы производительности могут создавать не только программисты, но и художники: большие текстуры, тяжёлые модели, лишние draw calls.</p>
+          </article>
+        </div>
+
+        <div class="content-block">
+          <h3>Ключевое сообщение доклада</h3>
+          <p><strong>Производительность вездесуща и является краеугольным камнем при разработке видеоигр.</strong> Инструментами профилирования должны пользоваться все, начиная от программистов движка, вылавливающих «спайки» и оптимизирующих код под самые разнообразные конфигурации, которые встречаются у игроков, заканчивая художниками и геймдизайнерами, следящими за техническим состоянием игрового контента.</p>
+        </div>
+
+        <div class="content-block">
+          <h3>О чём рассказано в докладе</h3>
+          <p>Спикеры рассказали про особенности профилирования приложений реального времени, о том, как проверка производительности стала частью процесса разработки, и самое интересное — про внутреннее устройство собственного профайлера. Детально коснулись того, как измеряют производительность CPU и GPU, RAM/VRAM, работу с диском и счетчиками. Поделились трюками, которые используют, чтобы собрать нужную информацию из операционной системы и видеодрайвера (даже если они не хотят ей делиться), а также подходами для локализации проблем в сложном и непредсказуемом окружении.</p>
+        </div>
+      </section>
+
+      <section id="overview" class="content-section">
+        <div class="section-head">
+          <h2>1. Виды профилирования</h2>
+          <p>Авторы показывают, что обычных профайлеров недостаточно. Существуют два основных подхода:</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Виды профилирования">
+          <button class="tab-btn active" type="button" data-tab="sampling">Sampling</button>
+          <button class="tab-btn" type="button" data-tab="instrumentation">Instrumentation</button>
+        </div>
+
+        <div class="tab-panels">
+          <article id="sampling" class="tab-panel active">
+            <h3>Sampling Profiling</h3>
+            <p>Sampling-профилирование работает так: приложение периодически останавливают, снимают stack trace, смотрят, где чаще всего находится CPU.</p>
+            <div class="pros-cons">
+              <div class="pros">
+                <h4>✓ Плюсы</h4>
+                <ul>
+                  <li>Легко использовать</li>
+                  <li>Минимальная интеграция</li>
+                </ul>
+              </div>
+              <div class="cons">
+                <h4>✗ Минусы</h4>
+                <ul>
+                  <li>Результаты не всегда детерминированы</li>
+                  <li>Плохо подходит для многопоточности</li>
+                  <li>Неудобно сравнивать между билдами</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article id="instrumentation" class="tab-panel">
+            <h3>Instrumentation Profiling</h3>
+            <p>В инструментальном профилировании разработчики сами расставляют метки в коде.</p>
+            <pre><code class="code-block" id="code-profile-scope">PROFILE_SCOPE("Physics");</code></pre>
+            <p>Профайлер точно знает: когда началась зона, когда закончилась, какой поток её выполнял.</p>
+            <div class="pros-cons">
+              <div class="pros">
+                <h4>✓ Плюсы</h4>
+                <ul>
+                  <li>Высокая точность</li>
+                  <li>Удобно сравнивать билды</li>
+                  <li>Хорошо работает в многопоточности</li>
+                  <li>Подходит даже для скриптовых языков</li>
+                </ul>
+              </div>
+              <div class="cons">
+                <h4>✗ Минусы</h4>
+                <ul>
+                  <li>Требуется интеграция в движок</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="content-block highlight">
+          <p><strong>Вывод:</strong> Для больших игровых проектов нужен собственный инструментальный профайлер, который почти не влияет на производительность, умеет работать с многопоточностью и собирает CPU и GPU тайминги.</p>
+        </div>
+      </section>
+
+      <section id="architecture" class="content-section">
+        <div class="section-head">
+          <h2>2. Архитектура собственного профайлера</h2>
+          <p>Авторы реализовали многоуровневую систему профилирования. Основные слои:</p>
+        </div>
+
+        <svg class="profiler-architecture" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <style>
+              .arch-box { fill: #0659ff; stroke: #0036b8; stroke-width: 2; }
+              .arch-label { fill: white; font-size: 16px; font-weight: bold; text-anchor: middle; }
+              .arch-sublabel { fill: white; font-size: 12px; text-anchor: middle; }
+              .arch-arrow { stroke: #556077; stroke-width: 2; marker-end: url(#arrowhead); }
+              .arch-header { fill: #141822; font-size: 14px; font-weight: bold; text-anchor: middle; }
+            </style>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <polygon points="0 0, 10 3, 0 6" fill="#556077" />
+            </marker>
+          </defs>
+
+          <!-- Engine Level -->
+          <g>
+            <text x="100" y="30" class="arch-header">Engine Level</text>
+            <rect x="30" y="50" width="140" height="60" class="arch-box" rx="8"/>
+            <text x="100" y="85" class="arch-label">Engine</text>
+            <text x="100" y="105" class="arch-sublabel">Markers</text>
+          </g>
+
+          <!-- Profiler Interface Level -->
+          <g>
+            <text x="300" y="30" class="arch-header">Profiler Interface Level</text>
+            <rect x="220" y="50" width="160" height="60" class="arch-box" rx="8"/>
+            <text x="300" y="85" class="arch-label">Macros &</text>
+            <text x="300" y="105" class="arch-sublabel">Hooks</text>
+          </g>
+
+          <!-- Profiler Implementations Level -->
+          <g>
+            <text x="650" y="30" class="arch-header">Profiler Impl Level</text>
+            <rect x="580" y="50" width="140" height="60" class="arch-box" rx="8"/>
+            <text x="650" y="85" class="arch-label">Lesta</text>
+            <text x="650" y="105" class="arch-sublabel">Profiler</text>
+          </g>
+
+          <!-- Arrows between levels -->
+          <polyline points="170,80 220,80" class="arch-arrow"/>
+          <polyline points="380,80 580,80" class="arch-arrow"/>
+
+          <!-- Loggers -->
+          <g>
+            <text x="100" y="180" class="arch-header">Loggers</text>
+            <rect x="20" y="200" width="60" height="50" class="arch-box" rx="6"/>
+            <text x="50" y="230" class="arch-sublabel">CPU</text>
+            
+            <rect x="95" y="200" width="60" height="50" class="arch-box" rx="6"/>
+            <text x="125" y="230" class="arch-sublabel">GPU</text>
+            
+            <rect x="170" y="200" width="60" height="50" class="arch-box" rx="6"/>
+            <text x="200" y="230" class="arch-sublabel">RAM</text>
+            
+            <rect x="245" y="200" width="60" height="50" class="arch-box" rx="6"/>
+            <text x="275" y="230" class="arch-sublabel">VRAM</text>
+            
+            <rect x="320" y="200" width="60" height="50" class="arch-box" rx="6"/>
+            <text x="350" y="230" class="arch-sublabel">IO</text>
+          </g>
+
+          <!-- Arrows to loggers -->
+          <polyline points="100,110 50,200" class="arch-arrow"/>
+          <polyline points="300,110 300,200" class="arch-arrow"/>
+
+          <!-- Processors -->
+          <g>
+            <text x="600" y="180" class="arch-header">Processors</text>
+            <rect x="520" y="200" width="75" height="50" class="arch-box" rx="6"/>
+            <text x="557.5" y="230" class="arch-sublabel">Save</text>
+            
+            <rect x="610" y="200" width="75" height="50" class="arch-box" rx="6"/>
+            <text x="647.5" y="230" class="arch-sublabel">Network</text>
+            
+            <rect x="700" y="200" width="75" height="50" class="arch-box" rx="6"/>
+            <text x="737.5" y="230" class="arch-sublabel">Render</text>
+          </g>
+
+          <!-- Arrows from main to processors -->
+          <polyline points="650,110 650,200" class="arch-arrow"/>
+
+          <!-- Data Flow -->
+          <g>
+            <text x="400" y="340" class="arch-header" style="fill: #556077;">Data Flow</text>
+            <polyline points="50,270 100,320" class="arch-arrow"/>
+            <polyline points="350,270 450,320" class="arch-arrow"/>
+            <polyline points="600,270 550,320" class="arch-arrow"/>
+            
+            <circle cx="100" cy="340" r="25" fill="none" stroke="#0659ff" stroke-width="2"/>
+            <text x="100" y="345" class="arch-label" style="font-size: 12px;">Collect</text>
+            
+            <circle cx="450" cy="340" r="25" fill="none" stroke="#0659ff" stroke-width="2"/>
+            <text x="450" y="345" class="arch-label" style="font-size: 12px;">Store</text>
+            
+            <circle cx="700" cy="340" r="25" fill="none" stroke="#0659ff" stroke-width="2"/>
+            <text x="700" y="345" class="arch-label" style="font-size: 12px;">Analyze</text>
+          </g>
+
+          <!-- Performance QA Output -->
+          <g>
+            <rect x="300" y="400" width="200" height="70" fill="none" stroke="#0659ff" stroke-width="2" stroke-dasharray="5,5" rx="8"/>
+            <text x="400" y="425" class="arch-label" style="font-size: 14px;">Performance QA</text>
+            <text x="400" y="450" class="arch-sublabel">Regression Testing</text>
+            <text x="400" y="465" class="arch-sublabel">Regression Testing</text>
+          </g>
+
+          <polyline points="450,360 450,400" class="arch-arrow"/>
+        </svg>
+
+        <div class="architecture-explanation">
+          <h3>Слои архитектуры</h3>
+          
+          <div class="accordion" aria-label="Компоненты архитектуры">
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false">Engine Markers</button>
+              <div class="accordion-panel">
+                <p>В коде движка расставляются маркеры:</p>
+                <pre><code>PROFILE_SCOPE("Render");
+PROFILE_SCOPE("Physics");
+PROFILE_SCOPE("AI");</code></pre>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false">Макросы</button>
+              <div class="accordion-panel">
+                <p>Макросы позволяют:</p>
+                <ul>
+                  <li>Включать/выключать профилирование</li>
+                  <li>Менять backend</li>
+                  <li>Подключать разные профайлеры</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false">Loggers (Логгеры)</button>
+              <div class="accordion-panel">
+                <p>Каждый logger отвечает за свой тип данных:</p>
+                <ul>
+                  <li>CPU — измерение времени выполнения кода</li>
+                  <li>GPU — timestamp queries, pipeline analysis</li>
+                  <li>RAM — отслеживание аллокаций</li>
+                  <li>VRAM — анализ памяти видеокарты</li>
+                  <li>IO — мониторинг файловых операций</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div class="accordion-item">
+              <button class="accordion-trigger" type="button" aria-expanded="false">Processors (Обработчики)</button>
+              <div class="accordion-panel">
+                <p>После записи данные обрабатываются:</p>
+                <ul>
+                  <li>Сохраняются в файлы</li>
+                  <li>Отправляются по сети</li>
+                  <li>Рисуются на графиках</li>
+                  <li>Агрегируются для regression testing</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="profiling" class="content-section">
+        <div class="section-head">
+          <h2>3. CPU Profiling</h2>
+          <p>Как измерить производительность процессора с минимальным оверхедом</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="CPU Profiling подходы">
+          <button class="tab-btn active" type="button" data-tab="rdtsc">RDTSC</button>
+          <button class="tab-btn" type="button" data-tab="raii">RAII</button>
+          <button class="tab-btn" type="button" data-tab="multithreading">Многопоточность</button>
+        </div>
+
+        <div class="tab-panels">
+          <article id="rdtsc" class="tab-panel active">
+            <h3>Time Stamp Counter (RDTSC)</h3>
+            <p>Для измерения времени используется инструкция процессора <code>RDTSC</code>, которая возвращает количество тактов CPU.</p>
+            <div class="pros-cons">
+              <div class="pros">
+                <h4>✓ Плюсы</h4>
+                <ul>
+                  <li>Очень высокая точность</li>
+                  <li>Минимальный overhead</li>
+                </ul>
+              </div>
+              <div class="cons">
+                <h4>✗ Минусы</h4>
+                <ul>
+                  <li>Частоту приходится калибровать вручную</li>
+                  <li>Может быть нестабильна на некоторых процессорах</li>
+                </ul>
+              </div>
+            </div>
+          </article>
+
+          <article id="raii" class="tab-panel">
+            <h3>RAII Профилирование</h3>
+            <p>Вместо ручного start/end используется RAII (Resource Acquisition Is Initialization) — современный C++ подход для автоматического управления ресурсами.</p>
+            <pre><code class="code-block" id="code-profile-raii">class ProfileScope {
+public:
+    ProfileScope(const char* name) {
+        StartTime = ReadTSC();
+    }
+    
+    ~ProfileScope() {
+        uint64_t End = ReadTSC();
+        SaveResult(End - StartTime);
+    }
+    
+private:
+    uint64_t StartTime;
+};</code></pre>
+            <p>Использование:</p>
+            <pre><code>void UpdatePhysics() {
+    ProfileScope scope("Physics");
+    Simulate();
+}</code></pre>
+            <p>Такой подход автоматически измеряет время выполнения блока при разрушении объекта.</p>
+          </article>
+
+          <article id="multithreading" class="tab-panel">
+            <h3>Многопоточность</h3>
+            <p>Профайлер отдельно отслеживает:</p>
+            <ul>
+              <li>Worker threads (рабочие потоки)</li>
+              <li>Main thread (основной поток)</li>
+              <li>Background jobs (фоновые задачи)</li>
+            </ul>
+            <p>Для этого каждому потоку задаётся имя. Windows не предоставляет удобный API для naming threads, поэтому используется специальный exception-based hack. Это позволяет видеть имена потоков в профайлере и в Visual Studio debugger.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="gpu" class="content-section">
+        <div class="section-head">
+          <h2>4. GPU Profiling и ETW</h2>
+          <p>GPU profiling намного сложнее CPU profiling, так как GPU работает асинхронно и параллельно с CPU.</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="GPU Profiling технологии">
+          <button class="tab-btn active" type="button" data-tab="gpu-queries">Timestamp Queries</button>
+          <button class="tab-btn" type="button" data-tab="gpu-hooking">DirectX Hooking</button>
+          <button class="tab-btn" type="button" data-tab="etw">ETW</button>
+        </div>
+
+        <div class="tab-panels">
+          <article id="gpu-queries" class="tab-panel active">
+            <h3>GPU Timestamp Queries</h3>
+            <p>Для GPU используются timestamp queries. Схема работы:</p>
+            <ol>
+              <li>GPU получает команду</li>
+              <li>В pipeline вставляется query</li>
+              <li>GPU записывает timestamp</li>
+              <li>Через несколько кадров результат считывается с GPU памяти</li>
+            </ol>
+            <h4>GPU Cyclic Buffer</h4>
+            <p>Чтобы не тормозить GPU, используется ring buffer. Пока GPU пишет новые тайминги, CPU читает старые. Это минимизирует stalls и позволяет профайлеру работать без заметного влияния на производительность.</p>
+          </article>
+
+          <article id="gpu-hooking" class="tab-panel">
+            <h3>Hooking DirectX</h3>
+            <p>Авторы внедряются в DirectX через vtable hooking. Это позволяет перехватывать вызовы DirectX и собирать:</p>
+            <ul>
+              <li>Draw calls</li>
+              <li>Dispatch calls</li>
+              <li>Barriers</li>
+              <li>Resource creation</li>
+              <li>State changes</li>
+            </ul>
+            <p>Профайлер показывает:</p>
+            <ul>
+              <li>Количество примитивов</li>
+              <li>Пиксели</li>
+              <li>Vertex shader load</li>
+              <li>Pixel shader load</li>
+              <li>Render targets</li>
+              <li>Pipeline bottlenecks</li>
+            </ul>
+          </article>
+
+          <article id="etw" class="tab-panel">
+            <h3>ETW — Event Tracing for Windows</h3>
+            <p>Авторы используют ETW — инструмент ядра Windows для отслеживания системных событий на уровне ядра.</p>
+            <h4>Что видно в профайлере через ETW:</h4>
+            <ul>
+              <li><strong>Context switches</strong> — смена активных потоков</li>
+              <li><strong>Scheduler</strong> — решения планировщика ОС</li>
+              <li><strong>Disk activity</strong> — работа дисковой подсистемы</li>
+              <li><strong>Работа драйверов</strong> — взаимодействие с видеодрайвером</li>
+            </ul>
+            <h4>Практический пример:</h4>
+            <p>Можно увидеть, что Chrome занял CPU, главный поток игры был остановлен, и FPS просел. ETW позволяет локализовать такие проблемы на уровне ОС.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="memory" class="content-section">
+        <div class="section-head">
+          <h2>5. Memory Profiling: RAM и VRAM</h2>
+          <p>Профилирование памяти нужно для поиска утечек, allocation spikes и причин фризов.</p>
+        </div>
+
+        <div class="tabs" role="tablist" aria-label="Memory Profiling типы">
+          <button class="tab-btn active" type="button" data-tab="ram-profiling">RAM Profiling</button>
+          <button class="tab-btn" type="button" data-tab="vram-profiling">VRAM Profiling</button>
+          <button class="tab-btn" type="button" data-tab="hooking">Allocation Hooking</button>
+        </div>
+
+        <div class="tab-panels">
+          <article id="ram-profiling" class="tab-panel active">
+            <h3>RAM Profiling</h3>
+            <p>В движке переопределяются глобальные функции аллокации:</p>
+            <pre><code class="code-block">void* Allocate(SizeT Size) {
+    Profiling::TrackAllocation(
+        GGenericHeap,
+        Ptr,
+        Size);
+    return Ptr;
+}</code></pre>
+            <h4>Отслеживание аллокаций</h4>
+            <p>Каждая аллокация записывается в профайлер вместе с:</p>
+            <ul>
+              <li>Stack trace — где в коде произошла аллокация</li>
+              <li>Heap — на каком heap'е</li>
+              <li>Размер аллокации</li>
+            </ul>
+            <p>Это помогает искать утечки памяти, временные allocations и fragmentation.</p>
+          </article>
+
+          <article id="vram-profiling" class="tab-panel">
+            <h3>VRAM Profiling</h3>
+            <p>GPU-память анализируется отдельно через DirectX API:</p>
+            <pre><code class="code-block">struct GPUMemoryStats {
+    struct Stats {
+        SizeT Usage;      // Текущее использование
+        SizeT Budget;     // Максимальный лимит
+        Atomic64 Resource;
+    };
+    Stats CpuMemory;
+    Stats GpuMemory;
+};</code></pre>
+            <h4>GPU Resources Tree</h4>
+            <p>Профайлер строит дерево ресурсов:</p>
+            <pre><code>GPU Resources
+├── Textures
+├── Models
+├── Buffers
+└── Render Targets</code></pre>
+            <p>Это помогает художникам находить слишком тяжёлые ресурсы и оптимизировать контент.</p>
+          </article>
+
+          <article id="hooking" class="tab-panel">
+            <h3>Allocation Hooking via Import Table</h3>
+            <p>Авторы используют import table hooking — внедрение в таблицу импорта Windows API функций.</p>
+            <pre><code class="code-block">LPVOID WINAPI OurVirtualAlloc(...) {
+    Profiling::TrackAllocation(
+        GVirtualMemoryHeap,
+        lpAddress,
+        dwSize);
+    
+    return GVirtualMemoryOriginalFunctions
+        .VirtualAlloc(...);
+}</code></pre>
+            <p>Профайлер может видеть даже системные аллокации Windows, что позволяет найти проблемы на более глубоком уровне.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="section-head">
+          <h2>6. File IO Profiling</h2>
+          <p>Игры постоянно читают данные: текстуры, модели, карты, аудио. Профилирование диска помогает найти bottleneck'и.</p>
+        </div>
+
+        <div class="monitoring-grid">
+          <article class="card">
+            <h3>Отслеживаемые операции</h3>
+            <ul>
+              <li>Create</li>
+              <li>Read</li>
+              <li>Write</li>
+              <li>Rename</li>
+              <li>Delete</li>
+              <li>Flush</li>
+              <li>FSCTL</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Найденные проблемы</h3>
+            <ul>
+              <li>Слишком маленькие чтения</li>
+              <li>Плохой streaming</li>
+              <li>Bottleneck диска</li>
+              <li>Проблемы декомпрессии</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>ETW для диска</h3>
+            <p>ETW позволяет увидеть:</p>
+            <ul>
+              <li>Кто использует диск</li>
+              <li>Какие процессы мешают игре</li>
+              <li>Сколько времени занимает IO</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="section-head">
+          <h2>7. Data Plots и Performance QA</h2>
+          <p>Профайлер собирает счётчики производительности и строит графики.</p>
+        </div>
+
+        <div class="code-example">
+          <h3>Примеры счётчиков</h3>
+          <pre><code class="code-block">PROFILE_COUNTER(
+    "Triangles.Terrain",
+    GStatsTriByType[EStats::TERRAIN]);
+
+PROFILE_COUNTER(
+    "Particles.PixelsDrawn",
+    PixelsDrawn);</code></pre>
+        </div>
+
+        <div class="cards-grid">
+          <article class="card">
+            <h3>Отображаемые метрики</h3>
+            <ul>
+              <li>Triangles</li>
+              <li>Particles</li>
+              <li>Visible lights</li>
+              <li>RAM usage</li>
+              <li>VRAM usage</li>
+              <li>FPS</li>
+              <li>IO stats</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <h3>Агрегация данных</h3>
+            <ul>
+              <li>Average</li>
+              <li>Min</li>
+              <li>Max</li>
+              <li>Median</li>
+              <li>Sum</li>
+            </ul>
+            <p>Помогает находить регрессии между сборками.</p>
+          </article>
+
+          <article class="card">
+            <h3>Performance QA</h3>
+            <p>Performance QA использует профайлер для проверки:</p>
+            <ul>
+              <li>Не ухудшился ли FPS</li>
+              <li>Не выросла ли память</li>
+              <li>Не появились ли spikes</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="conclusion" class="content-section">
+        <div class="section-head">
+          <h2>Основные выводы доклада</h2>
+        </div>
+
+        <div class="conclusions-list">
+          <article class="conclusion-card">
+            <h3>Профайлер — часть движка</h3>
+            <p>Обычных external tools недостаточно. Для больших проектов нужна собственная система профилирования, глубоко интегрированная в движок.</p>
+          </article>
+
+          <article class="conclusion-card">
+            <h3>Instrumentation > Sampling</h3>
+            <p>Instrumentation profiling лучше подходит для игр — он детерминирован, точен и удобен для regression testing.</p>
+          </article>
+
+          <article class="conclusion-card">
+            <h3>GPU так же важен, как CPU</h3>
+            <p>Даже если CPU быстрый — bottleneck может быть в GPU pipeline. Нужно профилировать обе стороны.</p>
+          </article>
+
+          <article class="conclusion-card">
+            <h3>Memory profiling обязателен</h3>
+            <p>Проблемы памяти часто вызывают spikes, stutters, page faults и фризы. Отслеживание аллокаций критически важно.</p>
+          </article>
+
+          <article class="conclusion-card">
+            <h3>ETW — мощный инструмент</h3>
+            <p>ETW позволяет видеть scheduler, disk IO, context switches и системные события. Это помогает локализовать проблемы на уровне ОС.</p>
+          </article>
+
+          <article class="conclusion-card">
+            <h3>Профайлер для всех</h3>
+            <p>Инструментами профилирования должны пользоваться программисты, художники и QA — каждый может найти проблемы в своей области.</p>
+          </article>
+        </div>
+
+        <div class="content-block highlight" style="margin-top: 32px;">
+          <p><strong>Главная идея:</strong> Профайлер должен быть точным, быстрым, минимально intrusive и удобным для программистов, QA и художников. Авторы показывают, как современные игровые движки используют low-level C++, Windows internals, DirectX hooking, ETW, instrumentation profiling и memory tracking для достижения максимальной производительности.</p>
+        </div>
+      </section>
+
+      <section id="sources" class="content-section">
+        <div class="section-head">
+          <h2>Источники и ссылки</h2>
+        </div>
+        <ul class="source-list">
+          <li><a href="https://www.youtube.com/watch?v=C6pHrKRPZ4Q" target="_blank" rel="noopener">Видео доклада на YouTube</a></li>
+          <li><a href="https://cppconf.ru/archive/2025/talks/50b67463fdf744fc97aa438455d5f8b6/" target="_blank" rel="noopener">Доклад на сайте C++ Russia 2025</a></li>
+          <li><a href="https://squidex.jugru.team/api/assets/srm/cb48295e-0b16-4349-b361-bb916bba8f0a/our-profiling-and-beyond-correct.pdf" target="_blank" rel="noopener">Презентация (PDF)</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter" target="_blank" rel="noopener">Time Stamp Counter — Wikipedia</a></li>
+          <li><a href="https://learn.microsoft.com/en-us/windows/win32/etw/about-event-tracing" target="_blank" rel="noopener">ETW Documentation — Microsoft Docs</a></li>
+          <li><a href="https://learn.microsoft.com/en-us/windows/win32/direct3d12/timing" target="_blank" rel="noopener">Direct3D12 Timing — Microsoft Docs</a></li>
+          <li><a href="https://www.ntcore.com/files/inject2it.htm" target="_blank" rel="noopener">Import Table Hooking — NTCore</a></li>
+          <li><a href="https://cppconf.ru/" target="_blank" rel="noopener">C++ Russia Conference</a></li>
+        </ul>
+      </section>
+    </main>
+
+    <script src="speaker.js"></script>
+  </body>
+</html>
