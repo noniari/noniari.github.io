@@ -570,6 +570,29 @@ body {
     border: 1px solid var(--border);
 }
 
+.speaker-header {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.speaker-photo-small {
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    object-fit: cover;
+}
+
+.speaker-header h3 {
+    margin-bottom: 4px;
+    margin-top: 0;
+    color: var(--text);
+}
+
 .speaker-card h3 {
     margin-bottom: 4px;
     color: var(--text);
@@ -578,7 +601,7 @@ body {
 .speaker-role {
     color: var(--muted);
     font-size: 0.95rem;
-    margin-bottom: 12px;
+    margin: 0;
 }
 
 .intro-grid {
@@ -786,6 +809,17 @@ body {
 
     .speakers-grid {
         grid-template-columns: 1fr;
+    }
+
+    .speaker-header {
+        flex-direction: row;
+        gap: 12px;
+    }
+
+    .speaker-photo-small {
+        width: 70px;
+        height: 70px;
+        min-width: 70px;
     }
 
     .pros-cons {
