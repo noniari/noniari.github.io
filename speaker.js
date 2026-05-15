@@ -9,27 +9,12 @@ const timelineDataOrca = [
 ];
 
 const timelineDataProfiling = [
-  {id: 'intro', time: '00:00', title: 'Представление', text: 'Филипп и Влад начинают рассказ о профилировании в Леста Игры.'},
-  {id: 'importance', time: '00:31', title: 'Важность профилирования', text: 'Почему профилирование критически важно для игровой разработки.'},
-  {id: 'realtime', time: '01:06', title: 'Системы реального времени', text: 'Игры как системы реального времени, требования к FPS.'},
-  {id: 'metrics', time: '01:49', title: 'Основные метрики', text: 'FPS, требования к производительности на разных конфигурациях.'},
-  {id: 'content', time: '02:27', title: 'Контент и артисты', text: 'Как художники влияют на производительность игры.'},
-  {id: 'testing', time: '03:18', title: 'Тестирование', text: 'Тестирование на различных конфигурациях и QA процесс.'},
-  {id: 'profilers', time: '04:40', title: 'Виды профайлеров', text: 'Внутренние и внешние профайлеры, инструменты для разных ролей.'},
-  {id: 'sampling', time: '05:30', title: 'Sampling vs Instrumentation', text: 'Два главных подхода к профилированию: сравнение и выводы.'},
+  {id: 'intro', time: '00:00', title: 'Введение', text: 'Филипп и Влад представляют доклад о профилировании в Леста Игры.'},
+  {id: 'overview', time: '04:40', title: 'Виды профилирования', text: 'Sampling и instrumentation для игровых движков.'},
   {id: 'architecture', time: '10:01', title: 'Архитектура профайлера', text: 'Многоуровневая система профилирования Леста Игры.'},
-  {id: 'cpu', time: '17:14', title: 'CPU профилирование', text: 'RDTSC, RAII, измерение времени с минимальным оверхедом.'},
-  {id: 'threading', time: '22:00', title: 'Многопоточность', text: 'Именование потоков, tracking и синхронизация.'},
-  {id: 'etw', time: '24:25', title: 'ETW и Context Switches', text: 'Event Tracing for Windows для отслеживания переключений контекста.'},
-  {id: 'gpu', time: '26:28', title: 'GPU профилирование', text: 'Timestamp queries, асинхронность GPU и CPU.'},
-  {id: 'gpu-hoking', time: '31:30', title: 'DirectX hooking', text: 'Перехват DirectX вызовов через vtable hooking.'},
-  {id: 'memory', time: '37:51', title: 'Memory profiling', text: 'Профилирование памяти и поиск проблем.'},
-  {id: 'gpu-res', time: '39:16', title: 'GPU ресурсы', text: 'Анализ видеопамяти и дерево ресурсов.'},
-  {id: 'ram', time: '41:33', title: 'Оперативная память', text: 'Отслеживание аллокаций и утечек памяти.'},
-  {id: 'hooking', time: '44:32', title: 'Allocation hooking', text: 'Перехват системных аллокаций через таблицу импорта.'},
-  {id: 'io', time: '48:45', title: 'File IO профилирование', text: 'Отслеживание дисковых операций и streaming.'},
-  {id: 'stats', time: '51:28', title: 'Сбор статистики', text: 'Счётчики производительности и графики данных.'},
-  {id: 'conclusion', time: '54:52', title: 'Заключение', text: 'Выводы о профилировании в игровой разработке.'}
+  {id: 'profiling', time: '17:14', title: 'CPU Profiling', text: 'RDTSC, RAII и многопоточность для CPU-профайлинга.'},
+  {id: 'gpu', time: '26:28', title: 'GPU Profiling и ETW', text: 'Timestamp queries, DirectX hooking и Event Tracing for Windows.'},
+  {id: 'conclusion', time: '54:52', title: 'Заключение', text: 'Ключевые выводы по профилированию игр.'}
 ];
 
 function getTimelineData() {

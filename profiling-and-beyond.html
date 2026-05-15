@@ -49,10 +49,8 @@
           <div class="speaker-card">
             <div class="speaker-header">
               <img class="speaker-photo-small" src="philipp-belozerow.jpg" alt="Портрет Филиппа Белозёрова" onerror="this.onerror=null;this.src='placeholder.svg';">
-              <div>
-                <h3><a class="bio-link" href="https://cppconf.ru/archive/2025/persons/88c14327063c4e359a71c80e658f3fde/" target="_blank" rel="noopener">Филипп Белозёров</a></h3>
-                <p class="speaker-role">Леста Игры</p>
-              </div>
+              <h3><a class="bio-link" href="https://cppconf.ru/archive/2025/persons/88c14327063c4e359a71c80e658f3fde/" target="_blank" rel="noopener">Филипп Белозёров</a></h3>
+              <p class="speaker-role">Леста Игры</p>
             </div>
             <div class="speaker-info">
               <ul class="bio-list">
@@ -68,10 +66,8 @@
           <div class="speaker-card">
             <div class="speaker-header">
               <img class="speaker-photo-small" src="Vladislav.png" alt="Портрет Владислава Гордиенко" onerror="this.onerror=null;this.src='placeholder.svg';">
-              <div>
-                <h3><a class="bio-link" href="https://cppconf.ru/archive/2025/persons/a3912b985c884de3be4767b863196196/" target="_blank" rel="noopener">Владислав Гордиенко</a></h3>
-                <p class="speaker-role">Леста Игры</p>
-              </div>
+              <h3><a class="bio-link" href="https://cppconf.ru/archive/2025/persons/a3912b985c884de3be4767b863196196/" target="_blank" rel="noopener">Владислав Гордиенко</a></h3>
+              <p class="speaker-role">Леста Игры</p>
             </div>
             <div class="speaker-info">
               <ul class="bio-list">
@@ -198,125 +194,6 @@
           <h2>2. Архитектура собственного профайлера</h2>
           <p>Авторы реализовали многоуровневую систему профилирования. Основные слои:</p>
         </div>
-
-        <svg class="profiler-architecture" viewBox="0 0 800 520" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: auto;">
-          <defs>
-            <style>
-              .arch-box { fill: #0659ff; stroke: #0036b8; stroke-width: 2; }
-              .arch-label { fill: white; font-size: 16px; font-weight: bold; text-anchor: middle; }
-              .arch-sublabel { fill: white; font-size: 12px; text-anchor: middle; }
-              .arch-arrow { stroke: #9bb0d9; stroke-width: 2; marker-end: url(#arrowhead); }
-              .arch-header { fill: #556077; font-size: 13px; font-weight: bold; text-anchor: middle; }
-              [data-theme="dark"] .arch-header { fill: #9bb0d9; }
-              [data-theme="dark"] .arch-arrow { stroke: #7a92b8; }
-            </style>
-            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
-              <polygon points="0 0, 10 3, 0 6" fill="#9bb0d9" />
-            </marker>
-          </defs>
-
-          <!-- Engine Level -->
-          <g>
-            <text x="100" y="28" class="arch-header">Engine Level</text>
-            <rect x="30" y="45" width="140" height="60" class="arch-box" rx="8"/>
-            <text x="100" y="80" class="arch-label">Engine</text>
-            <text x="100" y="100" class="arch-sublabel">Markers</text>
-          </g>
-
-          <!-- Profiler Interface Level -->
-          <g>
-            <text x="300" y="28" class="arch-header">Profiler Interface Level</text>
-            <rect x="220" y="45" width="160" height="60" class="arch-box" rx="8"/>
-            <text x="300" y="80" class="arch-label">Macros &</text>
-            <text x="300" y="100" class="arch-sublabel">Hooks</text>
-          </g>
-
-          <!-- Profiler Implementations Level -->
-          <g>
-            <text x="650" y="28" class="arch-header">Profiler Impl Level</text>
-            <rect x="580" y="45" width="140" height="60" class="arch-box" rx="8"/>
-            <text x="650" y="80" class="arch-label">Lesta</text>
-            <text x="650" y="100" class="arch-sublabel">Profiler</text>
-          </g>
-
-          <!-- Arrows between levels -->
-          <polyline points="170,75 220,75" class="arch-arrow"/>
-          <polyline points="380,75 580,75" class="arch-arrow"/>
-
-          <!-- Loggers -->
-          <g>
-            <text x="100" y="175" class="arch-header">Loggers</text>
-            <rect x="20" y="195" width="60" height="50" class="arch-box" rx="6"/>
-            <text x="50" y="225" class="arch-sublabel">CPU</text>
-            
-            <rect x="95" y="195" width="60" height="50" class="arch-box" rx="6"/>
-            <text x="125" y="225" class="arch-sublabel">GPU</text>
-            
-            <rect x="170" y="195" width="60" height="50" class="arch-box" rx="6"/>
-            <text x="200" y="225" class="arch-sublabel">RAM</text>
-            
-            <rect x="245" y="195" width="60" height="50" class="arch-box" rx="6"/>
-            <text x="275" y="225" class="arch-sublabel">VRAM</text>
-            
-            <rect x="320" y="195" width="60" height="50" class="arch-box" rx="6"/>
-            <text x="350" y="225" class="arch-sublabel">IO</text>
-          </g>
-
-          <!-- Arrows to loggers -->
-          <polyline points="100,105 50,195" class="arch-arrow"/>
-          <polyline points="300,105 300,195" class="arch-arrow"/>
-
-          <!-- Processors -->
-          <g>
-            <text x="600" y="175" class="arch-header">Processors</text>
-            <rect x="520" y="195" width="75" height="50" class="arch-box" rx="6"/>
-            <text x="557.5" y="225" class="arch-sublabel">Save</text>
-            
-            <rect x="610" y="195" width="75" height="50" class="arch-box" rx="6"/>
-            <text x="647.5" y="225" class="arch-sublabel">Network</text>
-            
-            <rect x="700" y="195" width="75" height="50" class="arch-box" rx="6"/>
-            <text x="737.5" y="225" class="arch-sublabel">Render</text>
-          </g>
-
-          <!-- Arrows from main to processors -->
-          <polyline points="650,105 650,195" class="arch-arrow"/>
-
-          <!-- Data Flow Section -->
-          <g>
-            <text x="400" y="310" class="arch-header">Data Flow & Processing</text>
-          </g>
-
-          <!-- Flow arrows -->
-          <polyline points="50,245 100,290" class="arch-arrow" stroke-dasharray="4,4"/>
-          <polyline points="350,245 350,290" class="arch-arrow" stroke-dasharray="4,4"/>
-          <polyline points="650,245 600,290" class="arch-arrow" stroke-dasharray="4,4"/>
-
-          <!-- Data flow circles positioned lower -->
-          <circle cx="100" cy="330" r="30" fill="none" stroke="#0659ff" stroke-width="2.5"/>
-          <text x="100" y="337" class="arch-label" style="font-size: 13px; fill: #0659ff;">Collect</text>
-          
-          <circle cx="400" cy="330" r="30" fill="none" stroke="#0659ff" stroke-width="2.5"/>
-          <text x="400" y="337" class="arch-label" style="font-size: 13px; fill: #0659ff;">Store</text>
-          
-          <circle cx="700" cy="330" r="30" fill="none" stroke="#0659ff" stroke-width="2.5"/>
-          <text x="700" y="337" class="arch-label" style="font-size: 13px; fill: #0659ff;">Analyze</text>
-
-          <!-- Horizontal flow between circles -->
-          <polyline points="130,330 370,330" class="arch-arrow"/>
-          <polyline points="430,330 670,330" class="arch-arrow"/>
-
-          <!-- Performance QA Output -->
-          <g>
-            <rect x="300" y="410" width="200" height="70" fill="none" stroke="#0659ff" stroke-width="2.5" stroke-dasharray="5,5" rx="8"/>
-            <text x="400" y="435" class="arch-label" style="font-size: 14px; fill: #0659ff;">Performance QA</text>
-            <text x="400" y="458" class="arch-sublabel" style="fill: #9bb0d9; font-size: 11px;">Regression Testing</text>
-            <text x="400" y="473" class="arch-sublabel" style="fill: #9bb0d9; font-size: 11px;">Metrics Analysis</text>
-          </g>
-
-          <!-- Arrow to Performance QA -->
-          <polyline points="400,360 400,410" class="arch-arrow"/>
-        </svg>
 
         <div class="architecture-explanation">
           <h3>Слои архитектуры</h3>
@@ -581,7 +458,7 @@ private:
         </div>
       </section>
 
-      <section class="content-section">
+      <section id="io" class="content-section">
         <div class="section-head">
           <h2>6. File IO Profiling</h2>
           <p>Игры постоянно читают данные: текстуры, модели, карты, аудио. Профилирование диска помогает найти bottleneck'и.</p>
@@ -623,7 +500,7 @@ private:
         </div>
       </section>
 
-      <section class="content-section">
+      <section id="stats" class="content-section">
         <div class="section-head">
           <h2>7. Data Plots и Performance QA</h2>
           <p>Профайлер собирает счётчики производительности и строит графики.</p>
